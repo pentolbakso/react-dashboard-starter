@@ -8,6 +8,7 @@ const createAxios = () => {
     withCredentials: true
   });
 
+  /*
   instance.interceptors.request.use(request => {
     console.log("Request", request);
     return request;
@@ -17,6 +18,7 @@ const createAxios = () => {
     console.log("Response:", response);
     return response;
   });
+  */
 
   return instance;
 };
@@ -47,4 +49,52 @@ export const updateProfile = (id, admin) => {
   console.log(url, admin);
   if (!admin.password) delete admin.password;
   return createAxios().put(url, admin);
+};
+
+//contacts
+
+export const getContacts = () => {
+  const url = `${API_URL}/customers?includeNotActive=1`;
+  console.log(url);
+  return createAxios().get(url);
+};
+
+export const searchContact = query => {
+  const url = `${API_URL}/customers?{"fullName":{"$regex":"${query}","$options":"i"}}`;
+  console.log(url);
+  return createAxios().get(url);
+};
+
+export const createContact = customer => {
+  const url = `${API_URL}/customers`;
+  console.log(url);
+  return createAxios().post(url, customer);
+};
+
+export const updateContact = (id, customer) => {
+  const url = `${API_URL}/customers/${id}`;
+  console.log(url);
+  return createAxios().put(url, customer);
+};
+
+export const enableContact = id => {
+  const url = `${API_URL}/customers/${id}`;
+  console.log(url);
+  return createAxios().put(url, {
+    isActive: true
+  });
+};
+
+export const disableContact = id => {
+  const url = `${API_URL}/customers/${id}`;
+  console.log(url);
+  return createAxios().put(url, {
+    isActive: false
+  });
+};
+
+export const deleteContact = id => {
+  const url = `${API_URL}/customers/${id}`;
+  console.log(url);
+  return createAxios().delete(url);
 };

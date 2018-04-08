@@ -32,7 +32,7 @@ class LoginPage extends MobxObserver {
   }
 
   render() {
-    if (this.props.stores.auth.isLoggedIn()) return <Redirect to="/home" />;
+    if (this.props.stores.auth.isLoggedIn()) return <Redirect to="/dashboard" />;
 
     const errorMessage = this.state.error ? (
       <Message color="red">

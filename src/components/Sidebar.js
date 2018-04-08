@@ -10,18 +10,18 @@ const iconStyle = {
 class Sidebar extends Component {
   constructor(props) {
     super(props);
-    this.state = { activeItem: "" };
   }
 
-  handleClick(_path) {
-    let path = "/" + _path;
+  handleClick(path) {
     this.props.history.push(path);
   }
 
   render() {
     const { menus, largeScreen } = this.props;
-    let n = 0;
+    const url = this.props.match.url;
+    const current = "/" + this.props.match.url.split("/", 2)[1];
 
+    let n = 0;
     return (
       <div style={{ height: "100vh" }}>
         <Container textAlign="center" style={{ paddingTop: "1em" }}>
@@ -32,8 +32,12 @@ class Sidebar extends Component {
         </Container>
         <Menu fluid inverted vertical icon={largeScreen ? null : true}>
           {menus.map(menu => (
-            <Menu.Item onClick={() => this.handleClick(menu.path)} key={n++}>
-              <Icon name={menu.icon} style={iconStyle} size={largeScreen ? "normal" : "big"} />
+            <Menu.Item
+              onClick={() => this.handleClick(menu.path)}
+              active={current === menu.path}
+              key={n++}
+            >
+              <Icon name={menu.icon} style={iconStyle} size={largeScreen ? null : "big"} />
               {largeScreen ? menu.title : null}
             </Menu.Item>
           ))}

@@ -7,37 +7,37 @@ import Navbar from "../components/Navbar";
 import MobxObserver from "../components/MobxObserver";
 import FullScreenLoader from "../components/FullScreenLoader";
 import HomePage from "./home/HomePage";
-import ContactsPage from "./contact/ContactsPage";
+import Contacts from "./contact";
 import AccountPage from "./account/AccountPage";
 import NotFoundPage from "./NotFoundPage";
 import Sidebar from "../components/Sidebar";
 
 const menus = [
   {
-    title: "Home",
-    path: "home",
+    title: "Dashboard",
+    path: "/dashboard",
     icon: "home"
   },
   {
     title: "Contacts",
-    path: "contacts",
+    path: "/contacts",
     icon: "user"
   },
   {
     title: "Servers",
-    path: "servers",
+    path: "/servers",
     icon: "laptop"
   },
   {
     title: "Stuffs",
-    path: "stuffs",
+    path: "/stuffs",
     icon: "lab"
   }
 ];
 
 const mql = window.matchMedia(`(min-width: 640px)`);
 
-class Dashboard extends MobxObserver {
+class SecureApp extends MobxObserver {
   state = {
     loading: false,
     error: null,
@@ -89,8 +89,8 @@ class Dashboard extends MobxObserver {
             </Grid.Row>
             <Grid.Row style={{ padding: "1em" }}>
               <Switch>
-                <Route path="/home" component={HomePage} />
-                <Route path="/contacts" component={ContactsPage} />
+                <Route path="/dashboard" component={HomePage} />
+                <Route path="/contacts/:type?/:id?" component={Contacts} />
                 <Route path="/account" component={AccountPage} />
                 <Route component={NotFoundPage} />
               </Switch>
@@ -102,4 +102,4 @@ class Dashboard extends MobxObserver {
   }
 }
 
-export default inject("stores")(Dashboard);
+export default inject("stores")(SecureApp);
