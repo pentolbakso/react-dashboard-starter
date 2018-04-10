@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Breadcrumb, Divider, Message } from "semantic-ui-react";
 import ContactTable from "./ContactTable";
 import ContactView from "./ContactView";
+import ContactEdit from "./ContactEdit";
 
 class Contact extends Component {
   constructor(props) {
@@ -16,13 +17,15 @@ class Contact extends Component {
     let content = null;
     if (type) {
       if (type === "create") {
+        content = <ContactEdit create />;
         childBreadcrumb = <Breadcrumb.Section>Create</Breadcrumb.Section>;
       } else if (type === "view") {
-        content = <ContactView item={contact} />;
+        content = <ContactView item={contact} id={id} />;
         childBreadcrumb = (
           <Breadcrumb.Section>{contact ? contact.fullName : "View"}</Breadcrumb.Section>
         );
       } else if (type === "edit") {
+        content = <ContactEdit item={contact} id={id} />;
         childBreadcrumb = (
           <Breadcrumb.Section>{contact ? contact.fullName : "Edit"}</Breadcrumb.Section>
         );
@@ -33,12 +36,12 @@ class Contact extends Component {
 
     return (
       <React.Fragment>
-        <Breadcrumb size="big">
+        <Breadcrumb size="huge">
           <Breadcrumb.Section link>Contacts</Breadcrumb.Section>
           {childBreadcrumb ? <Breadcrumb.Divider icon="right chevron" /> : null}
           {childBreadcrumb}
         </Breadcrumb>
-        <Divider />
+        <Divider hidden />
         {content}
         {/*<pre>{JSON.stringify(this.props, null, 4)}</pre>*/}
       </React.Fragment>

@@ -1,5 +1,6 @@
 import { extendObservable, flow } from "mobx";
 import {
+  getContact,
   getContacts,
   createContact,
   updateContact,
@@ -16,6 +17,15 @@ export default class ContactStore {
       items: []
     });
   }
+
+  fetchItem = flow(function*(id) {
+    try {
+      const response = yield getContact(id);
+      return response.data;
+    } catch (e) {
+      throw createError(e);
+    }
+  });
 
   fetchItems = flow(function*() {
     try {

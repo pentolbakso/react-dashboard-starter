@@ -53,6 +53,12 @@ export const updateProfile = (id, admin) => {
 
 //contacts
 
+export const getContact = id => {
+  const url = `${API_URL}/customers/${id}`;
+  console.log(url);
+  return createAxios().get(url);
+};
+
 export const getContacts = () => {
   const url = `${API_URL}/customers?includeNotActive=1`;
   console.log(url);

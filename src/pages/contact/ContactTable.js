@@ -132,7 +132,16 @@ class ContactTable extends MobxObserver {
     });
   };
 
-  handleDelete = item => {};
+  handleDelete = item => {
+    if (window.confirm("Confirm deletion ?")) {
+      this.setState({ loading: true, error: null });
+      this.props.stores.contact
+        .delete(item.id)
+        .then(() => {})
+        .catch(err => this.setState({ error: err }))
+        .finally(() => this.setState({ loading: false }));
+    }
+  };
 
   handleSearch = e => {
     e.preventDefault();
