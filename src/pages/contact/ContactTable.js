@@ -11,7 +11,8 @@ import {
   Form,
   Input,
   Button,
-  Dimmer
+  Dimmer,
+  Segment
 } from "semantic-ui-react";
 import MobxObserver from "../../components/MobxObserver";
 import ContactView from "./ContactView";
@@ -55,8 +56,24 @@ const TableRowNotFound = () => (
 );
 
 class TableData extends MobxObserver {
+  state = {
+    prevDisabled: false,
+    nextDisabled: false
+  };
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { items, currentPage } = nextProps;
+    let prevDisabled = currentPage === 1;
+    let nextDisabled = items.length < 10;
+
+    return {
+      prevDisabled: prevDisabled,
+      nextDisabled: nextDisabled
+    };
+  }
+
   render() {
-    const { loading, items, onView, onToggle, onEdit, onDelete } = this.props;
+    const { loading, items, onView, onToggle, onEdit, onDelete, onPrev, onNext } = this.props;
     return (
       <Dimmer.Dimmable>
         <Dimmer active={loading} inverted>
@@ -88,6 +105,12 @@ class TableData extends MobxObserver {
             )}
           </Table.Body>
         </Table>
+        <Segment basic textAlign="center">
+          <Button.Group>
+            <Button icon="arrow left" disabled={this.state.prevDisabled} onClick={onPrev} />
+            <Button icon="arrow right" disabled={this.state.nextDisabled} onClick={onNext} />
+          </Button.Group>
+        </Segment>
       </Dimmer.Dimmable>
     );
   }
@@ -101,7 +124,7 @@ class ContactTable extends MobxObserver {
   };
 
   componentDidMount() {
-    this.fetchContacts();
+    if (this.props.stores.contact.items.length === 0) this.fetchContacts();
   }
 
   handleCreate = () => {
@@ -145,7 +168,24 @@ class ContactTable extends MobxObserver {
 
   handleSearch = e => {
     e.preventDefault();
+    this.props.stores.contact.resetPage();
     this.searchContacts(this.state.searchQuery);
+  };
+
+  handlePrevious = () => {
+    this.props.stores.contact.prevPage();
+    this.fetchContacts();
+  };
+
+  handleNext = () => {
+    this.props.stores.contact.nextPage();
+    this.fetchContacts();
+  };
+
+  handleReset = () => {
+    this.setState({ searchQuery: "" });
+    this.props.stores.contact.resetPage();
+    this.fetchContacts();
   };
 
   fetchContacts() {
@@ -171,12 +211,15 @@ class ContactTable extends MobxObserver {
     else
       content = (
         <TableData
+          currentPage={this.props.stores.contact.currentPage}
           items={this.props.stores.contact.items}
           loading={this.state.loading}
           onView={this.handleView}
           onToggle={this.handleToggle}
           onEdit={this.handleEdit}
           onDelete={this.handleDelete}
+          onPrev={this.handlePrevious}
+          onNext={this.handleNext}
         />
       );
 
@@ -189,17 +232,27 @@ class ContactTable extends MobxObserver {
                 icon="search"
                 iconPosition="left"
                 placeholder="Search ..."
+                value={this.state.searchQuery}
                 onChange={e => this.setState({ searchQuery: e.target.value })}
               />
             </Form>
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item fitted>
             <Button
               content="Create"
               icon="plus"
               labelPosition="left"
               color="green"
               onClick={() => this.handleCreate()}
+            />
+          </Menu.Item>
+          <Menu.Item fitted>
+            <Button
+              basic
+              content="Reset"
+              icon="refresh"
+              labelPosition="left"
+              onClick={() => this.handleReset()}
             />
           </Menu.Item>
         </Menu>

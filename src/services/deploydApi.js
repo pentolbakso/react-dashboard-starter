@@ -59,13 +59,14 @@ export const getContact = id => {
   return createAxios().get(url);
 };
 
-export const getContacts = () => {
-  const url = `${API_URL}/customers?includeNotActive=1`;
+export const getContacts = (page = 1) => {
+  if (page <= 0) page = 1;
+  const url = `${API_URL}/customers?includeNotActive=1&page=${page}`;
   console.log(url);
   return createAxios().get(url);
 };
 
-export const searchContact = query => {
+export const searchContact = (query, page = 1) => {
   const url = `${API_URL}/customers?{"fullName":{"$regex":"${query}","$options":"i"}}`;
   console.log(url);
   return createAxios().get(url);

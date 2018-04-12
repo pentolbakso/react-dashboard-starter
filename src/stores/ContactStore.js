@@ -1,4 +1,4 @@
-import { extendObservable, flow } from "mobx";
+import { action, extendObservable, flow } from "mobx";
 import {
   getContact,
   getContacts,
@@ -14,9 +14,25 @@ import { createError } from "../utils";
 export default class ContactStore {
   constructor() {
     extendObservable(this, {
-      items: []
+      items: [],
+      currentPage: 1
     });
   }
+
+  prevPage = action(() => {
+    if (this.currentPage <= 1) {
+      this.currentPage = 1;
+    }
+    this.currentPage = this.currentPage - 1;
+  });
+
+  nextPage = action(() => {
+    this.currentPage = this.currentPage + 1;
+  });
+
+  resetPage = action(() => {
+    this.currentPage = 1;
+  });
 
   fetchItem = flow(function*(id) {
     try {
@@ -29,8 +45,9 @@ export default class ContactStore {
 
   fetchItems = flow(function*() {
     try {
-      const response = yield getContacts();
+      const response = yield getContacts(this.currentPage);
       this.items.replace(response.data);
+      //console.log(response.data);
     } catch (e) {
       throw createError(e);
     }
@@ -38,7 +55,7 @@ export default class ContactStore {
 
   searchItems = flow(function*(query) {
     try {
-      const response = yield searchContact(query);
+      const response = yield searchContact(query, this.currentPage);
       this.items.replace(response.data);
     } catch (e) {
       throw createError(e);

@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { Breadcrumb, Divider, Message } from "semantic-ui-react";
+import { withRouter } from "react-router-dom";
 import ContactTable from "./ContactTable";
 import ContactView from "./ContactView";
 import ContactEdit from "./ContactEdit";
 
 class Contact extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  handleClick = (e, data) => {
+    this.props.history.push("/contacts");
+  };
+
   render() {
     const { type, id } = this.props.match.params;
     const { contact } = this.props.location;
@@ -37,7 +38,9 @@ class Contact extends Component {
     return (
       <React.Fragment>
         <Breadcrumb size="huge">
-          <Breadcrumb.Section link>Contacts</Breadcrumb.Section>
+          <Breadcrumb.Section onClick={!childBreadcrumb ? null : this.handleClick}>
+            Contacts
+          </Breadcrumb.Section>
           {childBreadcrumb ? <Breadcrumb.Divider icon="right chevron" /> : null}
           {childBreadcrumb}
         </Breadcrumb>
@@ -49,4 +52,4 @@ class Contact extends Component {
   }
 }
 
-export default Contact;
+export default withRouter(Contact);
